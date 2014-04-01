@@ -40,7 +40,7 @@ class Chosen extends AbstractChosen
     @container = ($ "<div />", container_props)
 
     if @is_multiple
-      @container.html '<ul class="chosen-choices"><li class="search-field"><input type="text" value="' + @default_text + '" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div>'
+      @container.html '<ul class="chosen-choices"><li class="search-field"><input type="text" value="' + @default_text + '" class="default" autocomplete="off" /></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div>'
     else
       @container.html '<a class="chosen-single chosen-default" tabindex="-1"><span>' + @default_text + '</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off" /></div><ul class="chosen-results"></ul></div>'
 
@@ -49,7 +49,6 @@ class Chosen extends AbstractChosen
 
     @search_field = @container.find('input').first()
     @search_results = @container.find('ul.chosen-results').first()
-    this.search_field_scale()
 
     @search_no_results = @container.find('li.no-results').first()
 
@@ -160,7 +159,6 @@ class Chosen extends AbstractChosen
     this.clear_backstroke()
 
     this.show_search_field_default()
-    this.search_field_scale()
 
   activate_field: ->
     @container.addClass "chosen-container-active"
@@ -198,7 +196,6 @@ class Chosen extends AbstractChosen
 
     this.search_field_disabled()
     this.show_search_field_default()
-    this.search_field_scale()
 
     @parsing = false
 
@@ -313,8 +310,6 @@ class Chosen extends AbstractChosen
 
       link.parents('li').first().remove()
 
-      this.search_field_scale()
-
   results_reset: ->
     this.reset_single_select_options()
     @form_field.options[0].selected = true
@@ -360,7 +355,6 @@ class Chosen extends AbstractChosen
 
       @form_field_jq.trigger "change", {'selected': @form_field.options[item.options_index].value} if @is_multiple || @form_field.selectedIndex != @current_selectedIndex
       @current_selectedIndex = @form_field.selectedIndex
-      this.search_field_scale()
 
   single_set_selected_text: (text=@default_text) ->
     if text is @default_text
@@ -384,7 +378,6 @@ class Chosen extends AbstractChosen
       this.winnow_results() if @results_showing
 
       @form_field_jq.trigger "change", {deselected: @form_field.options[result_data.options_index].value}
-      this.search_field_scale()
 
       return true
     else
@@ -453,7 +446,6 @@ class Chosen extends AbstractChosen
 
   keydown_checker: (evt) ->
     stroke = evt.which ? evt.keyCode
-    this.search_field_scale()
 
     this.clear_backstroke() if stroke != 8 and this.pending_backstroke
 
@@ -476,28 +468,3 @@ class Chosen extends AbstractChosen
         evt.preventDefault()
         this.keydown_arrow()
         break
-
-  search_field_scale: ->
-    if @is_multiple
-      h = 0
-      w = 0
-
-      style_block = "position:absolute; left: -1000px; top: -1000px; display:none;"
-      styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing']
-
-      for style in styles
-        style_block += style + ":" + @search_field.css(style) + ";"
-
-      div = $('<div />', { 'style' : style_block })
-      div.text @search_field.val()
-      $('body').append div
-
-      w = div.width() + 25
-      div.remove()
-
-      f_width = @container.outerWidth()
-
-      if( w > f_width - 10 )
-        w = f_width - 10
-
-      @search_field.css({'width': w + 'px'})
