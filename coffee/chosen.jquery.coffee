@@ -307,6 +307,7 @@ class Chosen extends AbstractChosen
       this.show_search_field_default()
 
       this.results_hide() if @is_multiple and this.choices_count() > 0 and @search_field.val().length < 1
+      this.results_update_field()
 
       link.parents('li').first().remove()
 
