@@ -11,6 +11,8 @@ class AbstractChosen
     this.set_up_html()
     this.register_observers()
 
+    this.results_update_field()
+
   set_default_values: ->
     @click_test_action = (evt) => this.test_active_click(evt)
     @activate_action = (evt) => this.activate_field(evt)
@@ -106,7 +108,7 @@ class AbstractChosen
     this.results_reset_cleanup() if not @is_multiple
     this.result_clear_highlight()
     this.results_build()
-    this.winnow_results() if @results_showing
+    this.winnow_results()
 
   reset_single_select_options: () ->
     for result in @results_data
